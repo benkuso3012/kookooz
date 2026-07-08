@@ -19,15 +19,17 @@ type MenuItem = {
   image_url: string | null;
   is_featured: boolean;
   is_spicy: boolean;
-  rating: number;
+  rating?: number;
   category_id: string | null;
 };
 
 type Category = {
   id: string;
   name: string;
-  sort_order: number;
+  sort_order?: number;
+  display_order?: number;
 };
+
 
 const Menu = () => {
   const { toast } = useToast();
@@ -57,7 +59,7 @@ const Menu = () => {
     const loadMenu = async () => {
       const [itemsRes, catsRes] = await Promise.all([
         supabase.from('menu_items').select('*').eq('is_available', true).order('name'),
-        supabase.from('menu_categories').select('*').order('sort_order'),
+        supabase.from('menu_categories').select('*').order('display_order'),
       ]);
       setMenuItems(itemsRes.data || []);
       setCategories(catsRes.data || []);
