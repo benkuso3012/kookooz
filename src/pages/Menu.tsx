@@ -59,7 +59,7 @@ const Menu = () => {
     const loadMenu = async () => {
       const [itemsRes, catsRes] = await Promise.all([
         supabase.from('menu_items').select('*').eq('is_available', true).order('name'),
-        supabase.from('menu_categories').select('*').order('sort_order'),
+        supabase.from('menu_categories').select('*').order('display_order'),
       ]);
       setMenuItems(itemsRes.data || []);
       setCategories(catsRes.data || []);
