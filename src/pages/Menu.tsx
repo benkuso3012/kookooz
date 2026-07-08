@@ -19,15 +19,17 @@ type MenuItem = {
   image_url: string | null;
   is_featured: boolean;
   is_spicy: boolean;
-  rating: number;
+  rating?: number;
   category_id: string | null;
 };
 
 type Category = {
   id: string;
   name: string;
-  sort_order: number;
+  sort_order?: number;
+  display_order?: number;
 };
+
 
 const Menu = () => {
   const { toast } = useToast();
