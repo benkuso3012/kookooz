@@ -6,15 +6,19 @@
 import { auth, defineMcp } from "npm:@lovable.dev/mcp-js@0.20.0";
 
 // src/lib/mcp/tools/list-menu-items.ts
-import { createClient } from "npm:@supabase/supabase-js@^2.110.1";
 import { defineTool } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z } from "npm:zod@^4.4.3";
+
+// src/lib/mcp/supabase.ts
+import { createClient } from "npm:@supabase/supabase-js@^2.110.1";
 function supabaseForUser(ctx) {
   return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
     global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
     auth: { persistSession: false, autoRefreshToken: false }
   });
 }
+
+// src/lib/mcp/tools/list-menu-items.ts
 var list_menu_items_default = defineTool({
   name: "list_menu_items",
   title: "List menu items",
@@ -43,15 +47,8 @@ var list_menu_items_default = defineTool({
 });
 
 // src/lib/mcp/tools/list-my-orders.ts
-import { createClient as createClient2 } from "npm:@supabase/supabase-js@^2.110.1";
 import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z as z2 } from "npm:zod@^4.4.3";
-function supabaseForUser2(ctx) {
-  return createClient2(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
-    global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
-    auth: { persistSession: false, autoRefreshToken: false }
-  });
-}
 var list_my_orders_default = defineTool2({
   name: "list_my_orders",
   title: "List my orders",
@@ -65,7 +62,7 @@ var list_my_orders_default = defineTool2({
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
-    const sb = supabaseForUser2(ctx);
+    const sb = supabaseForUser(ctx);
     let query = sb.from("orders").select("id,total_amount,status,delivery_address,phone,notes,created_at,order_items(item_name,item_price,quantity)").eq("user_id", ctx.getUserId()).order("created_at", { ascending: false }).limit(limit ?? 20);
     if (status) query = query.eq("status", status);
     const { data, error } = await query;
@@ -78,15 +75,8 @@ var list_my_orders_default = defineTool2({
 });
 
 // src/lib/mcp/tools/get-order.ts
-import { createClient as createClient3 } from "npm:@supabase/supabase-js@^2.110.1";
 import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z as z3 } from "npm:zod@^4.4.3";
-function supabaseForUser3(ctx) {
-  return createClient3(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
-    global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
-    auth: { persistSession: false, autoRefreshToken: false }
-  });
-}
 var get_order_default = defineTool3({
   name: "get_order",
   title: "Get order",
@@ -99,7 +89,7 @@ var get_order_default = defineTool3({
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
-    const sb = supabaseForUser3(ctx);
+    const sb = supabaseForUser(ctx);
     const { data, error } = await sb.from("orders").select("id,user_id,total_amount,status,delivery_address,phone,notes,created_at,order_items(item_name,item_price,quantity)").eq("id", order_id).maybeSingle();
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
     if (!data) return { content: [{ type: "text", text: "Order not found" }], isError: true };
@@ -111,15 +101,8 @@ var get_order_default = defineTool3({
 });
 
 // src/lib/mcp/tools/create-order.ts
-import { createClient as createClient4 } from "npm:@supabase/supabase-js@^2.110.1";
 import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z as z4 } from "npm:zod@^4.4.3";
-function supabaseForUser4(ctx) {
-  return createClient4(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
-    global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
-    auth: { persistSession: false, autoRefreshToken: false }
-  });
-}
 var create_order_default = defineTool4({
   name: "create_order",
   title: "Create order",
@@ -141,7 +124,7 @@ var create_order_default = defineTool4({
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
-    const sb = supabaseForUser4(ctx);
+    const sb = supabaseForUser(ctx);
     const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
     const { data: order, error: orderError } = await sb.from("orders").insert({
       user_id: ctx.getUserId(),
@@ -172,14 +155,7 @@ var create_order_default = defineTool4({
 });
 
 // src/lib/mcp/tools/list-stores.ts
-import { createClient as createClient5 } from "npm:@supabase/supabase-js@^2.110.1";
 import { defineTool as defineTool5 } from "npm:@lovable.dev/mcp-js@0.20.0";
-function supabaseForUser5(ctx) {
-  return createClient5(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
-    global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
-    auth: { persistSession: false, autoRefreshToken: false }
-  });
-}
 var list_stores_default = defineTool5({
   name: "list_stores",
   title: "List stores",
@@ -190,7 +166,7 @@ var list_stores_default = defineTool5({
     if (!ctx.isAuthenticated()) {
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
-    const sb = supabaseForUser5(ctx);
+    const sb = supabaseForUser(ctx);
     const { data, error } = await sb.from("stores").select("*");
     if (error) return { content: [{ type: "text", text: error.message }], isError: true };
     return {
