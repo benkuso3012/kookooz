@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -13,6 +13,13 @@ import Footer from "@/components/Footer";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 
+function safeNext(raw: string | null): string {
+  if (!raw) return "/";
+  // Only allow same-origin relative paths
+  if (!raw.startsWith("/") || raw.startsWith("//")) return "/";
+  return raw;
+}
+
 const Auth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(false);
@@ -20,20 +27,22 @@ const Auth = () => {
   const [forgotMode, setForgotMode] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const nextPath = safeNext(searchParams.get("next"));
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
-        if (session?.user) navigate("/");
+        if (session?.user) navigate(nextPath);
       }
     );
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      if (session?.user) navigate("/");
+      if (session?.user) navigate(nextPath);
     });
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, nextPath]);
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,7 +60,7 @@ const Auth = () => {
 
     const { error } = await supabase.auth.signUp({
       email, password,
-      options: { emailRedirectTo: `${window.location.origin}/`, data: { full_name: fullName } }
+      options: { emailRedirectTo: `${window.location.origin}${nextPath}`, data: { full_name: fullName } }
     });
 
     if (error) toast({ title: "Sign Up Error", description: error.message, variant: "destructive" });

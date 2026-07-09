@@ -21,6 +21,7 @@ import Favorites from "./pages/Favorites";
 import StoreLocator from "./pages/StoreLocator";
 import DailySpecials from "./pages/DailySpecials";
 import AdminDashboard from "./pages/AdminDashboard";
+import OAuthConsent from "./pages/OAuthConsent";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/orders/:orderId" element={<OrderTracking />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
