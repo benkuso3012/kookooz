@@ -10,7 +10,7 @@ import { defineTool } from "npm:@lovable.dev/mcp-js@0.20.0";
 import { z } from "npm:zod@^4.4.3";
 
 // src/lib/mcp/supabase.ts
-import { createClient } from "npm:@supabase/supabase-js@^2.110.1";
+import { createClient } from "npm:@supabase/supabase-js@^2.110.2";
 function supabaseForUser(ctx) {
   return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_PUBLISHABLE_KEY, {
     global: { headers: { Authorization: `Bearer ${ctx.getToken()}` } },
@@ -177,7 +177,7 @@ var list_stores_default = defineTool5({
 });
 
 // src/lib/mcp/index.ts
-var projectRef = "ruqaadoukbydmhjooybj";
+var projectRef = "cvrzxjqwokstjusoauec";
 var mcp_default = defineMcp({
   name: "kookoos-mcp",
   title: "Kookoos",
