@@ -101,6 +101,20 @@ const Auth = () => {
     setForgotMode(false);
   };
 
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    const result = await lovable.auth.signInWithOAuth("google", {
+      redirect_uri: window.location.origin,
+    });
+    if (result.error) {
+      toast({ title: "Google Sign In Error", description: result.error.message ?? "Try again", variant: "destructive" });
+      setLoading(false);
+      return;
+    }
+    if (result.redirected) return;
+    setLoading(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
