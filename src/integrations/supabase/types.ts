@@ -258,34 +258,34 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
-          display_order: number
           id: string
           image_url: string | null
           is_active: boolean
           name: string
           slug: string
+          sort_order: number
           updated_at: string
         }
         Insert: {
           created_at?: string
           description?: string | null
-          display_order?: number
           id?: string
           image_url?: string | null
           is_active?: boolean
           name: string
           slug: string
+          sort_order?: number
           updated_at?: string
         }
         Update: {
           created_at?: string
           description?: string | null
-          display_order?: number
           id?: string
           image_url?: string | null
           is_active?: boolean
           name?: string
           slug?: string
+          sort_order?: number
           updated_at?: string
         }
         Relationships: []
@@ -305,11 +305,14 @@ export type Database = {
           ingredients: string[] | null
           is_available: boolean
           is_featured: boolean
+          is_gluten_free: boolean
           is_spicy: boolean
+          is_vegan: boolean
           is_vegetarian: boolean
           name: string
-          prep_time_minutes: number | null
+          prep_time: number | null
           price: number
+          rating: number
           tags: string[] | null
           updated_at: string
         }
@@ -327,11 +330,14 @@ export type Database = {
           ingredients?: string[] | null
           is_available?: boolean
           is_featured?: boolean
+          is_gluten_free?: boolean
           is_spicy?: boolean
+          is_vegan?: boolean
           is_vegetarian?: boolean
           name: string
-          prep_time_minutes?: number | null
+          prep_time?: number | null
           price: number
+          rating?: number
           tags?: string[] | null
           updated_at?: string
         }
@@ -349,11 +355,14 @@ export type Database = {
           ingredients?: string[] | null
           is_available?: boolean
           is_featured?: boolean
+          is_gluten_free?: boolean
           is_spicy?: boolean
+          is_vegan?: boolean
           is_vegetarian?: boolean
           name?: string
-          prep_time_minutes?: number | null
+          prep_time?: number | null
           price?: number
+          rating?: number
           tags?: string[] | null
           updated_at?: string
         }
@@ -405,34 +414,34 @@ export type Database = {
           created_at: string
           id: string
           item_name: string
+          item_price: number
           menu_item_id: string | null
           notes: string | null
           order_id: string
           quantity: number
           subtotal: number
-          unit_price: number
         }
         Insert: {
           created_at?: string
           id?: string
           item_name: string
+          item_price: number
           menu_item_id?: string | null
           notes?: string | null
           order_id: string
           quantity?: number
-          subtotal: number
-          unit_price: number
+          subtotal?: number
         }
         Update: {
           created_at?: string
           id?: string
           item_name?: string
+          item_price?: number
           menu_item_id?: string | null
           notes?: string | null
           order_id?: string
           quantity?: number
           subtotal?: number
-          unit_price?: number
         }
         Relationships: [
           {
@@ -492,7 +501,6 @@ export type Database = {
           created_at: string
           customer_email: string | null
           customer_name: string | null
-          customer_phone: string | null
           delivery_address: string | null
           delivery_fee: number
           delivery_zone_id: string | null
@@ -504,12 +512,13 @@ export type Database = {
           order_type: Database["public"]["Enums"]["order_type"]
           payment_method: Database["public"]["Enums"]["payment_method"] | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          phone: string | null
           promo_code: string | null
           status: Database["public"]["Enums"]["order_status"]
           store_id: string | null
           subtotal: number
           tax: number
-          total: number
+          total_amount: number
           updated_at: string
           user_id: string | null
         }
@@ -518,7 +527,6 @@ export type Database = {
           created_at?: string
           customer_email?: string | null
           customer_name?: string | null
-          customer_phone?: string | null
           delivery_address?: string | null
           delivery_fee?: number
           delivery_zone_id?: string | null
@@ -530,12 +538,13 @@ export type Database = {
           order_type?: Database["public"]["Enums"]["order_type"]
           payment_method?: Database["public"]["Enums"]["payment_method"] | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          phone?: string | null
           promo_code?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           store_id?: string | null
           subtotal?: number
           tax?: number
-          total?: number
+          total_amount?: number
           updated_at?: string
           user_id?: string | null
         }
@@ -544,7 +553,6 @@ export type Database = {
           created_at?: string
           customer_email?: string | null
           customer_name?: string | null
-          customer_phone?: string | null
           delivery_address?: string | null
           delivery_fee?: number
           delivery_zone_id?: string | null
@@ -556,12 +564,13 @@ export type Database = {
           order_type?: Database["public"]["Enums"]["order_type"]
           payment_method?: Database["public"]["Enums"]["payment_method"] | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          phone?: string | null
           promo_code?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           store_id?: string | null
           subtotal?: number
           tax?: number
-          total?: number
+          total_amount?: number
           updated_at?: string
           user_id?: string | null
         }
@@ -776,14 +785,18 @@ export type Database = {
           city: string | null
           created_at: string
           email: string | null
+          features: string[]
+          hours: string | null
           id: string
           image_url: string | null
           is_active: boolean
+          is_flagship: boolean
           latitude: number | null
           longitude: number | null
           name: string
           opening_hours: Json | null
           phone: string | null
+          rating: number
           updated_at: string
         }
         Insert: {
@@ -791,14 +804,18 @@ export type Database = {
           city?: string | null
           created_at?: string
           email?: string | null
+          features?: string[]
+          hours?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
+          is_flagship?: boolean
           latitude?: number | null
           longitude?: number | null
           name: string
           opening_hours?: Json | null
           phone?: string | null
+          rating?: number
           updated_at?: string
         }
         Update: {
@@ -806,14 +823,18 @@ export type Database = {
           city?: string | null
           created_at?: string
           email?: string | null
+          features?: string[]
+          hours?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
+          is_flagship?: boolean
           latitude?: number | null
           longitude?: number | null
           name?: string
           opening_hours?: Json | null
           phone?: string | null
+          rating?: number
           updated_at?: string
         }
         Relationships: []
