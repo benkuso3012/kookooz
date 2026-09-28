@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAdminAuth } from '@/hooks/useAdminAuth';
+import { useAdminAuth, allowedTabs } from '@/hooks/useAdminAuth';
+import AdminSupplierOrdersTab from '@/components/admin/AdminSupplierOrdersTab';
 import { supabase } from '@/integrations/supabase/client';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { motion } from 'framer-motion';
@@ -60,7 +61,9 @@ type DailyStats = {
 };
 
 export default function AdminDashboard() {
-  const { isAdmin, loading } = useAdminAuth();
+  const { isStaff, roles, loading, userId } = useAdminAuth();
+  const isAdmin = isStaff;
+  const tabs = allowedTabs(roles);
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const [stats, setStats] = useState<DailyStats>({ totalOrders: 0, totalRevenue: 0, pendingOrders: 0, avgOrderValue: 0, totalMenuItems: 0, totalCustomers: 0 });
@@ -77,10 +80,14 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (!loading && !isAdmin) {
-      toast.error('Access denied. Admin privileges required.');
-      navigate('/');
+      if (userId) toast.error('This account has no staff access.');
+      navigate('/staff');
     }
-  }, [loading, isAdmin, navigate]);
+  }, [loading, isAdmin, navigate, userId]);
+
+  useEffect(() => {
+    if (tabs.length && !tabs.includes(activeTab)) setActiveTab(tabs[0]);
+  }, [tabs.join(','), activeTab]);
 
   useEffect(() => {
     if (isAdmin) fetchAll();
@@ -191,7 +198,7 @@ export default function AdminDashboard() {
     overview: 'Overview', orders: 'Orders', pos: 'POS Cashier', menu: 'Menu Items',
     inventory: 'Inventory', specials: 'Daily Specials', stores: 'Stores', kds: 'Kitchen Display',
     customers: 'Customers', staff: 'Staff', comms: 'Communications',
-    promotions: 'Promotions', suppliers: 'Suppliers', 'delivery-zones': 'Delivery Zones',
+    promotions: 'Promotions', suppliers: 'Suppliers', 'supplier-orders': 'Supplier Orders', 'delivery-zones': 'Delivery Zones',
     reports: 'Reports & Export', roles: 'Role Management', settings: 'Settings', audit: 'Activity Log',
   };
 
@@ -201,7 +208,8 @@ export default function AdminDashboard() {
         <AdminOnboarding onComplete={() => {}} />
         <OrderNotifications onNewOrder={fetchAll} />
 
-        <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} pendingOrders={stats.pendingOrders} />
+        <AdminSidebar activeTab={activeTab} onTabChange={setActiveTab} pendingOrders={stats.pendingOrders} allowed={tabs}
+          roleLabel={roles.includes('admin') ? 'Owner' : roles.includes('manager') ? 'Manager' : roles.includes('cashier') ? 'Cashier' : 'Kitchen'} />
 
         <div className="flex-1 flex flex-col min-w-0">
           {/* Top Bar */}
@@ -221,8 +229,8 @@ export default function AdminDashboard() {
             </div>
           </header>
 
-          {/* Stats Row (always visible) */}
-          <div className="px-4 sm:px-6 pt-4">
+          {/* Stats Row */}
+          <div className={`px-4 sm:px-6 pt-4 ${tabs.includes('overview') ? '' : 'hidden'}`}>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
               {[
                 { label: "Today's Orders", value: stats.totalOrders, color: 'text-primary' },
@@ -312,6 +320,7 @@ export default function AdminDashboard() {
             {activeTab === 'comms' && <AdminCommsTab orders={orders} />}
             {activeTab === 'promotions' && <AdminPromotionsTab />}
             {activeTab === 'suppliers' && <AdminSuppliersTab />}
+            {activeTab === 'supplier-orders' && <AdminSupplierOrdersTab />}
             {activeTab === 'delivery-zones' && <AdminDeliveryZonesTab />}
             {activeTab === 'kds' && <AdminKDSTab />}
             {activeTab === 'reports' && <AdminReportsTab orders={orders} />}

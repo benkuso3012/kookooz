@@ -839,6 +839,108 @@ export type Database = {
         }
         Relationships: []
       }
+      supplier_order_items: {
+        Row: {
+          created_at: string
+          id: string
+          inventory_id: string | null
+          item_name: string
+          quantity: number
+          supplier_order_id: string
+          unit_cost: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          inventory_id?: string | null
+          item_name: string
+          quantity?: number
+          supplier_order_id: string
+          unit_cost?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          inventory_id?: string | null
+          item_name?: string
+          quantity?: number
+          supplier_order_id?: string
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_order_items_inventory_id_fkey"
+            columns: ["inventory_id"]
+            isOneToOne: false
+            referencedRelation: "inventory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_order_items_supplier_order_id_fkey"
+            columns: ["supplier_order_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_orders: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          expected_date: string | null
+          id: string
+          notes: string | null
+          received_at: string | null
+          status: string
+          store_id: string | null
+          supplier_id: string | null
+          total_cost: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          expected_date?: string | null
+          id?: string
+          notes?: string | null
+          received_at?: string | null
+          status?: string
+          store_id?: string | null
+          supplier_id?: string | null
+          total_cost?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          expected_date?: string | null
+          id?: string
+          notes?: string | null
+          received_at?: string | null
+          status?: string
+          store_id?: string | null
+          supplier_id?: string | null
+          total_cost?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_orders_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       suppliers: {
         Row: {
           address: string | null
