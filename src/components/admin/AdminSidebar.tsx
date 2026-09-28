@@ -38,6 +38,7 @@ const managementItems = [
   { id: 'comms', label: 'Communications', icon: MessageSquare },
   { id: 'promotions', label: 'Promotions', icon: Gift },
   { id: 'suppliers', label: 'Suppliers', icon: Truck },
+  { id: 'supplier-orders', label: 'Supplier Orders', icon: Package },
   { id: 'delivery-zones', label: 'Delivery Zones', icon: MapPinned },
 ];
 
@@ -52,9 +53,11 @@ interface AdminSidebarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
   pendingOrders?: number;
+  allowed?: string[];
+  roleLabel?: string;
 }
 
-export default function AdminSidebar({ activeTab, onTabChange, pendingOrders = 0 }: AdminSidebarProps) {
+export default function AdminSidebar({ activeTab, onTabChange, pendingOrders = 0, allowed, roleLabel = 'Admin Panel' }: AdminSidebarProps) {
   const navigate = useNavigate();
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
@@ -64,7 +67,10 @@ export default function AdminSidebar({ activeTab, onTabChange, pendingOrders = 0
     navigate('/');
   };
 
-  const renderGroup = (label: string, items: typeof dashboardItems) => (
+  const renderGroup = (label: string, all: typeof dashboardItems) => {
+    const items = allowed ? all.filter(i => allowed.includes(i.id)) : all;
+    if (items.length === 0) return null;
+    return (
     <SidebarGroup>
       <SidebarGroupLabel>{label}</SidebarGroupLabel>
       <SidebarGroupContent>
@@ -90,7 +96,7 @@ export default function AdminSidebar({ activeTab, onTabChange, pendingOrders = 0
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  );
+  );};
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
@@ -102,7 +108,7 @@ export default function AdminSidebar({ activeTab, onTabChange, pendingOrders = 0
           {!collapsed && (
             <div>
               <h1 className="text-base font-bold text-foreground leading-tight">Kookoos</h1>
-              <p className="text-[11px] text-muted-foreground">Admin Panel</p>
+              <p className="text-[11px] text-muted-foreground">{roleLabel}</p>
             </div>
           )}
         </div>
