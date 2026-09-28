@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import ImageUpload from './ImageUpload';
 
 type MenuItem = {
   id: string;
@@ -150,8 +151,8 @@ export default function MenuItemModal({ open, onClose, item, onSaved, categories
           </div>
 
           <div className="grid gap-1.5">
-            <Label>Image URL</Label>
-            <Input value={form.image_url || ''} onChange={e => set('image_url', e.target.value)} placeholder="https://..." />
+            <Label>Photo</Label>
+            <ImageUpload value={form.image_url || null} onChange={url => set('image_url', url)} folder="menu" />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
